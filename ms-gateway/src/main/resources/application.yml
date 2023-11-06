@@ -1,0 +1,28 @@
+server:
+  port: 9090
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak-gateway:
+            issuer-uri: http://localhost:8080/realms/dh
+
+        registration:
+          keycloak-gateway:
+            client-id: api-gateway-client
+            client-secret: zAd9lUPeIvd3z9u31M4rpCViHW4TI6fO
+            scope:
+              - openid
+              - publish
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:9090/login/oauth2/code/keycloak
+
+  cloud:
+    gateway:
+      default-filters: TokenRelay
+      routes:
+        - id: ms-bills
+          uri: http://localhost:8086
+          predicates: Path=/bills/**
